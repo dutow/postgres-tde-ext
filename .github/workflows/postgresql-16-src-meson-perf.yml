@@ -97,11 +97,18 @@ jobs:
           sysbench --db-driver=pgsql --threads=1 sysbench/oltp_common_tde.lua --tables=1 --table-size=10000 --pgsql-db=sbtest2 prepare
           sysbench --db-driver=pgsql --threads=1 sysbench/oltp_read_only.lua --tables=1 --table-size=10000 --pgsql-db=sbtest2 run
           sysbench --db-driver=pgsql --threads=1 sysbench/oltp_read_only.lua --tables=1 --table-size=10000 --pgsql-db=sbtest2 run | tee perf_tde
-          echo "Norm queries: $(cat perf_norm | grep 'total number of events' | cut -d ':' -f 2 | sed 's/ //g')"
-          echo "TDE queries: $(cat perf_tde | grep 'total number of events' | cut -d ':' -f 2 | sed 's/ //g')"
+        working-directory: inst
+
+      - name: Print results
+        run: |  
+          NORM_Q=$(cat perf_norm | grep 'total number of events' | cut -d ':' -f 2 | sed 's/ //g')
+          TDE_Q=$(cat perf_tde | grep 'total number of events' | cut -d ':' -f 2 | sed 's/ //g')
+          echo "Norm queries: $NORM_Q"
+          echo "TDE queries: $TDE_Q"
           echo "Performance test results:" >> pr_perf_results
           echo "Normal queries: $(cat perf_norm | grep 'total number of events' | cut -d ':' -f 2 | sed 's/ //g')" >>  pr_perf_results
           echo "TDE queries: $(cat perf_tde | grep 'total number of events' | cut -d ':' -f 2 | sed 's/ //g')" >>  pr_perf_results
+          echo "Percentage: $(($TDE_Q*100/$NORM_Q))%" >> pr_perf_results
           PERF_RESULT=$(cat pr_perf_results)
           echo "PERF_RESULT<<EOF" >> $GITHUB_ENV
           echo "$PERF_RESULT" >> $GITHUB_ENV
