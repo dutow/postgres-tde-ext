@@ -35,6 +35,11 @@ jobs:
         run: |
           unzip pr_perf_results.zip
 
+      - name: Clone postgres-tde-ext repository
+        uses: actions/checkout@v2
+        with:
+          path: 'src'
+
       - name: 'Create comment'
         run: |
           gh pr comment ${PR_NUMBER} -F pr_perf_results --edit-last || \
@@ -42,3 +47,4 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        working-directory: src

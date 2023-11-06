@@ -112,3 +112,4 @@ jobs:
         with:
           name: pr_perf_results
           path: inst/pr_perf_results
+          path: pr_perf_results
