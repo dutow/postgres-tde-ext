@@ -111,4 +111,4 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: pr_perf_results
-          path: pr_perf_results
+          path: inst/pr_perf_results
